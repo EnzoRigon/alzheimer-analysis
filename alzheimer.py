@@ -118,3 +118,4 @@ history = model.fit(
 # Avaliação no conjunto de teste
 test_loss, test_acc = model.evaluate(test_ds)
 print(f"Acurácia no teste: {test_acc:.4f}")
+print(f"Perda no teste: {test_loss:.4f}")
