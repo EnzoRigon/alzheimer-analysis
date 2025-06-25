@@ -45,7 +45,7 @@ pip install -r requirements.txt
 - Execute o notebook `treat_images.ipynb` para limpar as imagens.
 
 ### 4. Execute o notebook ou arquivo .py
-Abra o arquivo `alzheimer.py` e execute para treinar e avaliar o modelo da arquitetura 1.
+Abra o arquivo `alzheimer.2.py` e execute para treinar e avaliar o modelo da arquitetura 1.
 Abra o arquivo `alzheimer.ipynb` e execute as células para treinar e avaliar o modelo da arquitetura 2.
 
 ---
@@ -61,7 +61,7 @@ Abra o arquivo `alzheimer.ipynb` e execute as células para treinar e avaliar o 
 ## Estrutura do projeto
 
 - `alzheimer.ipynb` — Notebook principal de treinamento e avaliação apresentado como **Arquitetura 2**.
-- `alzheimer.py` — Script de treinamento e avaliação apresentado como **Arquitetura 1**.
+- `alzheimer.2.py` — Script de treinamento e avaliação apresentado como **Arquitetura 1**.
 - `treat_images.ipynb` — Notebook de pré-processamento e balanceamento (use apenas se for baixar dados brutos).
 - `requirements.txt` — Lista de dependências.
 - `Data/` — Pasta com as imagens já pré-processadas.
