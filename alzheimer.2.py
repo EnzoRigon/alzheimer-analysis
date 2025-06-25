@@ -1,3 +1,4 @@
+import random
 from matplotlib.pyplot import imshow
 import os
 import numpy as np
@@ -7,7 +8,7 @@ import tensorflow as tf
 from tensorflow.keras.utils import load_img, img_to_array
 from tensorflow.keras.callbacks import EarlyStopping
 from keras.models import Sequential
-from keras.layers import Conv2D, Flatten, Dense, MaxPooling2D, Input
+from keras.layers import Conv2D, Flatten, Dense, MaxPooling2D, Input, Dropout
 
 img_size = (32, 32)
 batch_size = 8
@@ -18,7 +19,7 @@ image_paths = []
 labels = []
 class_names = sorted([d for d in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, d))])
 class_to_idx = {name: idx for idx, name in enumerate(class_names)}
-print(class_to_idx)
+
 
 for class_name in class_names:
     class_dir = os.path.join(data_dir, class_name)
@@ -37,6 +38,9 @@ X_temp, X_test, y_temp, y_test = train_test_split(
 X_train, X_val, y_train, y_val = train_test_split(
     X_temp, y_temp, test_size=0.15 / 0.85, stratify=y_temp, random_state=42
 )
+
+print("Interseção treino e teste:", np.intersect1d(X_train, X_test).size)
+print("Interseção validação e teste:", np.intersect1d(X_val, X_test).size)
 
 
 def preprocess_image(path, label):
@@ -71,18 +75,24 @@ print("Treino:", len(X_train), "Validação:", len(X_val), "Teste:", len(X_test)
 model = Sequential()
 
 model.add(Input(shape=(img_size[0], img_size[1], 1)))
-model.add(Conv2D(16, (3, 3), activation='relu', padding='same'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
 model.add(Conv2D(32, (3, 3), activation='relu', padding='same'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+
+model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
 
 model.add(Flatten())
 
 model.add(Dense(64, activation='relu'))
 model.add(Dense(4, activation='softmax'))
 
-model.compile(loss='sparse_categorical_crossentropy', optimizer='Adamax', metrics=['accuracy'])
+model.compile(
+    loss='sparse_categorical_crossentropy', 
+    optimizer='Adamax', 
+    metrics=['accuracy']
+)
 
 print(model.summary())
 
@@ -102,13 +112,23 @@ test_loss, test_acc = model.evaluate(test_ds)
 print(f"Acurácia no teste: {test_acc:.4f}")
 print(f"Perda no teste: {test_loss:.4f}")
 
-# plt.plot(history.history['loss'])
-# plt.plot(history.history['val_loss'])
-# plt.title('Model Loss')
-# plt.xlabel('Loss')
-# plt.ylabel('Epoch')
-# plt.legend(['Test', 'Validation'], loc='upper right')
-# plt.show()
+plt.plot(history.history['loss'], label='Treino')
+plt.plot(history.history['val_loss'], label='Validação')
+plt.title('Perda durante o treinamento')
+plt.xlabel('Época')
+plt.ylabel('Loss')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+plt.plot(history.history['accuracy'], label='Treino')
+plt.plot(history.history['val_accuracy'], label='Validação')
+plt.title('Acurácia durante o treinamento')
+plt.xlabel('Época')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.grid(True)
+plt.show()
 
 
 def predict(path):
@@ -132,8 +152,11 @@ def predict(path):
     plt.show()
 
 
-predict(f'{data_dir}/Moderate Dementia/OAS1_0308_MR1_mpr-1_101.jpg')
-predict(f'{data_dir}/Very mild Dementia/OAS1_0003_MR1_mpr-1_117.jpg')
-predict(f'{data_dir}/Mild Dementia/OAS1_0028_MR1_mpr-1_145.jpg')
-predict(f'{data_dir}/Non Demented/OAS1_0001_MR1_mpr-1_100.jpg')
-# predict('tux.png')
+# Sorteia uma pasta de classe e uma imagem aleatória para testar a predição
+random_folder = random.choice([f for f in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, f))])
+folder_path = os.path.join(data_dir, random_folder)
+
+file = random.choice([f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))])
+
+print(f"Predizendo imagem aleatória de {random_folder}: {file}")
+predict(os.path.join(folder_path, file))
