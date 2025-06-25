@@ -40,8 +40,9 @@ pip install -r requirements.txt
 
 ### 3. Prepare os dados
 
-- Extraia o arquivo `Data.zip` para que a pasta `Data` fique no diretório do projeto.
-- As imagens já estão pré-processadas e prontas para uso.
+- Baixe os arquivos em `https://www.kaggle.com/datasets/ninadaithal/imagesoasis` e extraia para a pasta Data, como a imagem abaixo.
+![Exemplo da pasta de dados.](imgs/Data.png)
+- Execute o notebook `treat_images.ipynb` para limpar as imagens.
 
 ### 4. Execute o notebook ou arquivo .py
 Abra o arquivo `alzheimer.py` e execute para treinar e avaliar o modelo da arquitetura 1.
